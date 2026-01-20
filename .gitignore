@@ -1,0 +1,4 @@
+.idea
+.ropeproject
+main.py
+*__pycache__
