@@ -1,4 +1,6 @@
 """
+security_check(val_type: str, value: int)
+
 Checks if the value is valid
 
 Keyword arguments:
@@ -24,7 +26,10 @@ def security_check(val_type: str, value: int) -> bool:
 
 
 class SecurePlant:
-    """Create a new SecurePlant object
+    """
+    SecurePlant(name: str)
+
+    Create a new SecurePlant object
 
     Keyword arguments:
     name -- The name of your new plant
@@ -37,6 +42,8 @@ class SecurePlant:
         print(f"Plant created: {name}")
 
     """
+    set_height(value: int)
+
     Set the plant's height to the specified value if it's valid
 
     Keyword arguments:
@@ -49,6 +56,8 @@ class SecurePlant:
             print(f"Height updated: {value}cm [OK]")
 
     """
+    set_age(value: int)
+
     Set the plant's age to the specified value if it's valid
 
     Keyword arguments:
@@ -61,6 +70,8 @@ class SecurePlant:
             print(f"Age updated: {value} days [OK]")
 
     """
+    get_height()
+
     Returns the plant's height (in cm)
     """
 
@@ -68,6 +79,8 @@ class SecurePlant:
         return self.__height
 
     """
+    get_age()
+
     Return the plant's age (in days)
     """
 

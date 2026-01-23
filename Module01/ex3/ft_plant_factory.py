@@ -1,4 +1,15 @@
 class Plant:
+    """
+    Plant(name: str, height: int, lifetime: int)
+
+    Creates a plant object
+
+    Keyword arguments:
+    name -- The name of your plant
+    height -- The height of your plant (in cm)
+    lifetime -- How long your plant has been alive since (in day)
+    """
+
     def __init__(self, name: str, height: int, lifetime: int):
         self.name = name
         self.height = height
