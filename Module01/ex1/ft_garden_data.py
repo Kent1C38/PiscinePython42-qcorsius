@@ -1,7 +1,5 @@
 class Plant:
     """
-    Plant(name: str, height: int, lifetime: int)
-
     Creates a plant object
 
     Keyword arguments:
@@ -14,6 +12,10 @@ class Plant:
         self.name = name
         self.height = height
         self.age = age
+
+    """
+    Print usefull infos of your plant
+    """
 
     def print_values(self):
         print(f"{self.name}: {self.height}cm, {self.age} days old")

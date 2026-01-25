@@ -1,7 +1,5 @@
 class Plant:
     """
-    Plant(name: str, height: int, lifetime: int)
-
     Creates a plant object
 
     Keyword arguments:
@@ -16,8 +14,6 @@ class Plant:
         self.lifetime = lifetime
 
     """
-    age(duration: int)
-
     Add days to the current age of your plant
 
     Keyword arguments:
@@ -28,8 +24,6 @@ class Plant:
         self.lifetime += duration
 
     """
-    grow(size: int)
-
     Add cm to the current height of your plant
 
     Keyword arguments:

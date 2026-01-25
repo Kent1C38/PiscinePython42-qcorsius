@@ -1,6 +1,5 @@
 class Plant:
     """
-    Plant(name: str, height: int, lifetime: int)
 
     Creates a plant object
 
