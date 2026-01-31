@@ -6,7 +6,7 @@ val_type -- The name of the value you're trying to updated
 """
 
 
-def security_check(val_type: str, value: int) -> bool:
+def security_check(val_type: str, val: int) -> bool:
     unit: str
     match val_type:
         case "height":
@@ -16,8 +16,8 @@ def security_check(val_type: str, value: int) -> bool:
         case _:
             print(f"Invalid value name: {val_type}")
             return False
-    if value < 0:
-        print(f"Invalid operation attempted: {val_type} {value}{unit} [REJECTED]")
+    if val < 0:
+        print(f"Invalid operation attempt: {val_type} {val}{unit} [REJECTED]")
         print(f"Security: Negative {val_type} rejected")
         return False
     return True
@@ -84,4 +84,4 @@ if __name__ == "__main__":
     print()
     rose.set_height(-5)
     print()
-    print(f"Current plant: {rose.name} ({rose.get_height()}cm, {rose.get_age()} days)")
+    print(f"Plant: {rose.name} ({rose.get_height()}cm, {rose.get_age()} days)")

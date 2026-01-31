@@ -44,7 +44,8 @@ class Flower(Plant):
 
     def show_info(self):
         print(
-            f"{self.name} (Flower): {self.height}cm, {self.age} days, {self.color} color"
+            f"{self.name} (Flower): {self.height}cm, " +
+            f"{self.age} days, {self.color} color"
         )
 
 
@@ -72,7 +73,8 @@ class Tree(Plant):
 
     def show_info(self):
         print(
-            f"{self.name} (Tree): {self.height}cm, {self.age} days, {self.trunk_diameter}cm diameter"
+            f"{self.name}(Tree): {self.height}cm, " +
+            f"{self.age} days,{self.trunk_diameter}cm diameter"
         )
 
 
@@ -84,7 +86,8 @@ class Vegetable(Plant):
     name -- The name of your plant
     height -- The height of your plant (in cm)
     age -- How long your plant has been alive since (in day)
-    harvest_season -- The name of the harvest season of your vegetable in plain text
+    harvest_season -- The name of the harvest season
+        of your vegetable in plain text
     """
 
     def __init__(
@@ -108,7 +111,8 @@ class Vegetable(Plant):
 
     def show_info(self):
         print(
-            f"{self.name} (Vegetable): {self.height}cm, {self.age} days, {self.harvest_season} harvest"
+            f"{self.name}(Vegetable): {self.height}cm, " +
+            f"{self.age} days, {self.harvest_season} harvest"
         )
 
 
@@ -138,7 +142,8 @@ if __name__ == "__main__":
 
     liste.append(Flower("Rose", 25, 30, "red"))
     liste.append(Tree("Oak", 500, 1825, 50))
-    liste.append(Vegetable("Tomato", 80, 90, "summer", "Tomato is rich in vitamin C"))
+    liste.append(Vegetable("Tomato", 80, 90, "summer",
+                           "Tomato is rich in vitamin C"))
 
     for obj in liste:
         obj.show_info()

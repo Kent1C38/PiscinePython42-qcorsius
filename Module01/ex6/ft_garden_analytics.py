@@ -20,9 +20,11 @@ class Plant:
     Initializes plants subclasses by registering them with a type name
 
     Keyword arguments:
-    cls - The class/subclass that inherits from plants you want to make inherit your new subclass
+    cls - The class/subclass that inherits from plants you want
+        to make inherit your new subclass
     Optionnal arguments:
-    type_name - The 'registered' name used in the creation of a plant to specify the class inheritance
+    type_name - The 'registered' name used in the creation of
+        a plant to specify the class inheritance
     **kwargs - Options from other classes
     """
 
@@ -73,7 +75,7 @@ class Plant:
     Creates a new plant using the right subclass following the given type name
 
     Keyword arguments:
-    cls: The current class 
+    cls: The current class
     type_name: The string representing the class you want it to inherit
     *args: The arguments that should be given to create your plant
     **kwargs: Arguments that are consumed by the constructor
@@ -173,7 +175,7 @@ class Garden:
     Adds a plant in the garden
 
     Keyword arguments:
-    plant - The plant to add 
+    plant - The plant to add
     """
 
     def add_plant(self, plant: Plant):
@@ -227,7 +229,8 @@ class GardenStats:
         self.garden_count = 0
 
     """
-    Retrieves the total amount of prize points of all the flowers inside the garden
+    Retrieves the total amount of prize points of all
+        the flowers inside the garden
 
     Return value: int
     """
@@ -295,7 +298,8 @@ class GardenManager:
     """
 
     def grow_all_plants(self, owner: str, size: int):
-        print(f"{owner} is helping all the plants from their garden to grow...")
+        print(f"{owner} is helping all the plants" +
+              "from their garden to grow...")
         for plant in self.get_garden(owner).content.values():
             plant.grow(size)
             self.stats.total_growth += size
@@ -304,7 +308,8 @@ class GardenManager:
     Adds a plant in someone's garden
 
     Keyword arguments:
-    owner - The name of the person that own the garden the plant shoul be added to 
+    owner - The name of the person that own the garden
+        the plant shoul be added to
     plant - The plant that is going to be added
     """
 
@@ -330,15 +335,22 @@ class GardenManager:
         for garden in self.gardens.values():
             if scores != "":
                 scores = (
-                    f"{scores}, {garden.owner}: {GardenStats.get_total_points(garden)}"
+                    f"{scores}, {garden.owner}: " +
+                    f"{GardenStats.get_total_points(garden)}"
                 )
             else:
-                scores = f"{garden.owner}: {GardenStats.get_total_points(garden)}"
+                scores = (
+                        f"{garden.owner}: " +
+                        f"{GardenStats.get_total_points(garden)}"
+                )
         print(
-            f"Plants added: {self.stats.total_added}, Total growth: {self.stats.total_growth}cm"
+            f"Plants added: {self.stats.total_added}," +
+            f"Total growth: {self.stats.total_growth}cm"
         )
         print(
-            f"Plant types: {self.stats.regular} regular, {self.stats.flowering} flowering, {self.stats.prize} prize flower\n"
+            f"Plant types: {self.stats.regular} regular," +
+            f"{self.stats.flowering}" +
+            f"flowering, {self.stats.prize} prize flower\n"
         )
         print("Height validation: True (Would just break if not valid)")
         print(f"Garden scores - {scores}")
@@ -365,9 +377,12 @@ if __name__ == "__main__":
     manager.add_garden("Alice")
     manager.add_garden("Bob")
     print()
-    manager.add_plant_to_garden("Alice", Plant.create("plant", "Oak tree", 101))
-    manager.add_plant_to_garden("Alice", Plant.create("flower", "Rose", 26, "red"))
-    manager.add_plant_to_garden("Bob", Plant.create("flower", "Tulip", 10, "rose"))
+    manager.add_plant_to_garden("Alice",
+                                Plant.create("plant", "Oak tree", 101))
+    manager.add_plant_to_garden("Alice",
+                                Plant.create("flower", "Rose", 26, "red"))
+    manager.add_plant_to_garden("Bob",
+                                Plant.create("flower", "Tulip", 10, "rose"))
 
     sunflo = Plant.create("prized", "Sunflower", 51, "yellow", 10)
     sunflo.bloom()
