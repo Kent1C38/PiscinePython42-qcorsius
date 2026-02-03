@@ -18,4 +18,3 @@ if __name__ == "__main__":
     print(f"Alice VS Bob common: {alice & bob}")
     print(f"Alice unique: {alice - bob}")
     print(f"Bob unique: {bob - alice}")
-
