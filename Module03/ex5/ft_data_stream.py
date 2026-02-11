@@ -1,8 +1,15 @@
 class EventStats:
     def __init__(self):
         self.total_events = 0
-        self.tresure_events = 0
+        self.treasure_events = 0
         self.levelup_event = 0
+        self.kill_events = 0
+
+    def infos(self):
+        print(f"Total events processed: {self.total_events}")
+        print(f"Level up events: {self.levelup_event}")
+        print(f"Treasure found events: {self.treasure_events}")
+        print(f"Monster killed events: {self.kill_events}")
 
 
 class Player:
@@ -44,9 +51,18 @@ class Event:
             return ttype == "levelup" or ttype == "treasure" or ttype == "kill"
         return False
 
-    def apply(self) -> None:
-        if self.get_type() == "levelup":
-            self.get_player().level_up()
+    def apply(self, stats: EventStats) -> None:
+        match self.get_type():
+            case "levelup":
+                self.get_player().level_up()
+                stats.levelup_event += 1
+            case "treasure":
+                stats.treasure_events += 1
+            case "kill":
+                stats.kill_events += 1
+            case _:
+                print("Cannot apply event: Unknown")
+        stats.total_events += 1
 
     def log(self) -> None:
         match self.get_type():
@@ -62,23 +78,72 @@ class Event:
                 print("Unknown Event")
 
 
-def gen_event(player_list: list) -> Event:
+def fibonacci_sequence():
+    fibo = [0, 1]
+    curr = 0
+    while True:
+        if curr >= len(fibo):
+            fibo += [fibo[curr - 2] + fibo[curr - 1]]
+        yield fibo[curr]
+        curr += 1
+
+
+def prime_sequence():
+    curr = 2
+    while True:
+        is_prime = True
+        limit = curr ** 0.5
+        i = 2
+
+        while i <= limit:
+            if curr % i == 0:
+                is_prime = False
+                break
+            i += 1
+
+        if is_prime:
+            yield curr
+        curr += 1
+
+
+def gen_event(player_list: list, stats: EventStats) -> Event:
     events = ["levelup", "treasure", "kill"]
     gen_call = 0
     while True:
         event = Event(events[gen_call % len(events)],
                       player_list[gen_call % len(player_list)])
         event.log()
-        event.apply()
+        event.apply(stats)
         gen_call += 1
         yield event
 
 
 if __name__ == "__main__":
     history = []
+    stats = EventStats()
     players = [Player("Alice", 1), Player("Bob", 5), Player("Alex", 2),
                Player("Carole", 10), Player("Camille", 6)]
-    generator = gen_event(players)
-    for i in range(1000):
+    generator = gen_event(players, stats)
+    tests_number = 1000
+
+    print("=== Game Data Stream Processor ===")
+    print("\nProcessing {tests_number} events...\n")
+    for i in range(tests_number):
         event = next(generator)
         history += [event]
+
+    print("\n=== Stream Analytics ===")
+    stats.infos()
+
+    print("\n=== Generator Demo ===")
+    fibo_sequ = fibonacci_sequence()
+    fibo = []
+    for y in range(10):
+        fibo += [next(fibo_sequ)]
+    print(f"Fibonacci sequence (10 first): {fibo}")
+
+    prime_sequ = prime_sequence()
+    primes = []
+    for z in range(10):
+        primes += [next(prime_sequ)]
+    print(f"Prime numbers (10 first): {primes}")
