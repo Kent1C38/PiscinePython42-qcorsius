@@ -1,20 +1,5 @@
-"""
-Checks if the given object is inherited from the given class
-
-Keyword arguments:
-obj - The object you want to test
-cls - The class that you want to know if obj is inherited
-
-Return value: bool
-"""
-
-
-def check_instance(obj: object, cls: type) -> bool:
-    return cls in obj.__class__.__mro__
-
-
 class Plant:
-    _types = {}
+    __types = {}
 
     """
     Initializes plants subclasses by registering them with a type name
@@ -31,7 +16,7 @@ class Plant:
     def __init_subclass__(cls, *, type_name=None, **kwargs):
         super().__init_subclass__(**kwargs)
         if type_name:
-            Plant._types[type_name] = cls
+            Plant.__types[type_name] = cls
 
     """
     Creates a Plant object
@@ -46,7 +31,8 @@ class Plant:
             self.name = name
             self.height = height
         else:
-            raise ValueError("Height must be a positive integer !")
+            print(f"Could not create '{name}': " +
+                  "Height must be a positive integer !")
 
     """
     Increases the height of your plant
@@ -55,12 +41,14 @@ class Plant:
     size - The size (in cm) your plant must grow (positive int)
     """
 
-    def grow(self, size: int):
+    def grow(self, size: int) -> bool:
         if Plant.is_height_valid(size):
             self.height += size
             print(f"{self.name} grew {size}cm")
+            return True
         else:
-            raise ValueError("Size must be a positive integer !")
+            print(f"Cannot grow {self.name}: Size must be a positive integer!")
+            return False
 
     """
     Retrieves useful infos about your plant
@@ -84,9 +72,9 @@ class Plant:
     @classmethod
     def create(cls, type_name, *args, **kwargs):
         try:
-            return cls._types[type_name](*args, **kwargs)
+            return cls.__types[type_name](*args, **kwargs)
         except KeyError:
-            raise ValueError("Unknown plant type")
+            print("Could not create plant: Unknown plant type '{type_name}'")
 
     """
     Checks if the given value is valid for the height value
@@ -201,15 +189,15 @@ class Garden:
     size - The amount it should be increased
     """
 
-    def grow_plant(self, name: str, size: int):
-        self.get_plant(name).grow(size)
+    def grow_plant(self, name: str, size: int) -> bool:
+        return self.get_plant(name).grow(size)
 
     """
     Reports all informations of the garden
     """
 
     def report(self):
-        print(f"=== {self.owner}'s Garden Report ===")
+        print(f"\n=== {self.owner}'s Garden Report ===")
         print("Plants in garden:")
         for plant in self.content.values():
             print(f"- {plant.get_infos()}")
@@ -239,7 +227,7 @@ class GardenStats:
     def get_total_points(garden: Garden) -> int:
         total = 0
         for plant in garden.content.values():
-            if check_instance(plant, PrizeFlower):
+            if isinstance(plant, PrizeFlower):
                 total += plant.prize_points
         return total
 
@@ -286,8 +274,8 @@ class GardenManager:
     """
 
     def grow_plant(self, owner: str, name: str, size: int):
-        self.get_garden(owner).get_plant(name).grow()
-        self.stats.total_growth += size
+        if self.get_garden(owner).grow_plant(name, size):
+            self.stats.total_growth += size
 
     """
     Grows all plants from someone's garden
@@ -298,11 +286,11 @@ class GardenManager:
     """
 
     def grow_all_plants(self, owner: str, size: int):
-        print(f"{owner} is helping all the plants" +
+        print(f"{owner} is helping all the plants " +
               "from their garden to grow...")
         for plant in self.get_garden(owner).content.values():
-            plant.grow(size)
-            self.stats.total_growth += size
+            if plant.grow(size):
+                self.stats.total_growth += size
 
     """
     Adds a plant in someone's garden
@@ -318,9 +306,9 @@ class GardenManager:
             return
         self.gardens[owner].add_plant(plant)
         self.stats.total_added += 1
-        if check_instance(plant, PrizeFlower):
+        if isinstance(plant, PrizeFlower):
             self.stats.prize += 1
-        elif check_instance(plant, FloweringPlant):
+        elif isinstance(plant, FloweringPlant):
             self.stats.flowering += 1
         else:
             self.stats.regular += 1
@@ -348,11 +336,11 @@ class GardenManager:
             f"Total growth: {self.stats.total_growth}cm"
         )
         print(
-            f"Plant types: {self.stats.regular} regular," +
-            f"{self.stats.flowering}" +
+            f"Plant types: {self.stats.regular} regular, " +
+            f"{self.stats.flowering} " +
             f"flowering, {self.stats.prize} prize flower\n"
         )
-        print("Height validation: True (Would just break if not valid)")
+        print("Height validation: True (invalid operations not permitted)")
         print(f"Garden scores - {scores}")
         print(f"Total managed gardens: {self.stats.garden_count}")
 
@@ -390,10 +378,10 @@ if __name__ == "__main__":
     manager.add_plant_to_garden("Alice", sunflo)
 
     print()
-    manager.grow_all_plants("Alice", 3)
-    manager.get_garden("Bob").get_plant("Tulip").grow(5)
-
+    manager.grow_all_plants("Alice", -3)
     print()
+    manager.grow_plant("Bob", "Tulip", 5)
+
     manager.get_garden("Alice").report()
     manager.get_garden("Bob").report()
 

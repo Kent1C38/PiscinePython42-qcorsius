@@ -141,9 +141,13 @@ if __name__ == "__main__":
     liste: Plant = []
 
     liste.append(Flower("Rose", 25, 30, "red"))
+    liste.append(Flower("Tulip", 10, 5, "white"))
     liste.append(Tree("Oak", 500, 1825, 50))
+    liste.append(Tree("Birch", 300, 365, 20))
     liste.append(Vegetable("Tomato", 80, 90, "summer",
                            "Tomato is rich in vitamin C"))
+    liste.append(Vegetable("Carrot", 5, 15, "spring",
+                           "Carrot makes you kind !"))
 
     for obj in liste:
         obj.show_info()

@@ -34,8 +34,6 @@ class Plant:
         self.height += size
 
     """
-    get_infos()
-
     Print all informations of your plant
     """
 
@@ -44,11 +42,11 @@ class Plant:
 
 
 if __name__ == "__main__":
-    rose: Plant = Plant("Rose", 25, 30)
+    rose = Plant("Rose", 25, 30)
     print("=== Day 1 ===")
     rose.get_infos()
 
-    growth: int = 6
+    growth = 6
     print("=== Day 7 ===")
     rose.grow(growth)
     rose.age(6)
