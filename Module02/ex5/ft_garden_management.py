@@ -1,7 +1,3 @@
-def check_instance(obj: object, cls: type) -> bool:
-    return cls in obj.__class__.__mro__
-
-
 def print_error(err: Exception):
     print(f"Error: {err}")
 
@@ -44,7 +40,7 @@ class Garden:
             for plant in self.plants:
                 if self.water_in_tank <= 0:
                     raise WaterError("Not enough water in tank!")
-                if check_instance(plant, Plant):
+                if isinstance(plant, Plant):
                     print(f"Watering {plant.name}")
                     plant.water_level += 1
                     self.water_in_tank -= 1
