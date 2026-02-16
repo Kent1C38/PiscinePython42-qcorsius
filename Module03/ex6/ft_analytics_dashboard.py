@@ -9,7 +9,7 @@ class Player:
 
     def get_score(self) -> int:
         return self.__score
-    
+
     def get_achievements(self) -> set[str]:
         return self.__achievements
 
@@ -28,24 +28,31 @@ def dict_comprehension_tests(players_list: list[Player]):
     player_scores = {x.get_name(): x.get_score() for x in players}
     print(f"Player scores: {player_scores}")
 
-    categories = {"high": lambda s: s > 1500,
-                  "medium": lambda s: 750 <= s <= 1500,
-                  "low": lambda s: s < 750}
-    stats_categories = {cat_name: len([s for s in player_scores.values()
-                                       if condition(s)])
-                        for cat_name, condition in categories.items()}
+    categories = {
+        "high": lambda s: s > 1500,
+        "medium": lambda s: 750 <= s <= 1500,
+        "low": lambda s: s < 750,
+    }
+    stats_categories = {
+        cat_name: len([s for s in player_scores.values() if condition(s)])
+        for cat_name, condition in categories.items()
+    }
     print(f"Score categories: {stats_categories}")
 
-    achievement_count = {player.get_name(): len(player.get_achievements())
-                         for player in players}
+    achievement_count = {
+        player.get_name(): len(player.get_achievements()) for player in players
+    }
     print(f"Achievement count: {achievement_count}")
 
 
 def set_comprehension_tests(players_list: list[Player]):
     print("\n=== Set Comprehension Examples ===")
 
-    unique_achievements = {achievement for player in players_list
-                           for achievement in player.get_achievements()}
+    unique_achievements = {
+        achievement
+        for player in players_list
+        for achievement in player.get_achievements()
+    }
     print(f"Unique achievements: {unique_achievements}")
 
 
@@ -56,8 +63,9 @@ def show_global_analytics(players_list: list[Player]):
     avg = sum([x.get_score() for x in players_list]) / total_players
     print(f"Average score: {avg}")
     top_score = max([player.get_score() for player in players_list])
-    top_performers = [player for player in players_list if
-                      player.get_score() == top_score]
+    top_performers = [
+        player for player in players_list if player.get_score() == top_score
+    ]
     print(f"Top performer: {top_performers[0].get_name()} ({top_score}pts)")
 
 
