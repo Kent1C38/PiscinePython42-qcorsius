@@ -33,10 +33,8 @@ def test_error_types():
 
     print("\nTesting multiple errors together...")
     try:
-        garden_operations("value")
-        garden_operations("zero_division")
-        garden_operations("file_not_found")
-        garden_operations("key")
+        for op in operations:
+            garden_operations(op)
     except (ValueError, ZeroDivisionError, FileNotFoundError, KeyError):
         print("Caught an error, but program continues!")
 
