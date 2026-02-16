@@ -20,8 +20,8 @@ def water_plants(plant_list: list[Plant]):
 
 
 def test_watering_system():
-    valid_list = {Plant("tomato"), Plant("lettuce"), Plant("carrot")}
-    invalid_list = {Plant("tomato"), None, Plant("carrot")}
+    valid_list = [Plant("tomato"), Plant("lettuce"), Plant("carrot")]
+    invalid_list = [Plant("tomato"), None, Plant("carrot")]
 
     print("=== Garden Watering System ===")
 
