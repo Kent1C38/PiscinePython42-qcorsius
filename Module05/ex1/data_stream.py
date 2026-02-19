@@ -10,10 +10,12 @@ class DataStream(ABC):
 
     @abstractmethod
     def process_batch(self, data_batch: list[Any]) -> str:
+        """Processes a batch of data"""
         pass
 
     def filter_data(self, data_batch: list[Any],
                     criteria: Optional[str] = None) -> list[Any]:
+        """Retrieve a list of filtered data"""
         if criteria is None:
             return data_batch
 
@@ -21,6 +23,7 @@ class DataStream(ABC):
                 criteria.lower() in str(item).lower()]
 
     def get_stats(self) -> dict[str, Union[str, int, float]]:
+        """Retrieve stored stats"""
         return {"uid": self.stream_id, "processed": self.count}
 
 
@@ -99,15 +102,17 @@ class StreamProcessor:
         self.streams = {}
 
     def add_stream(self, stream: DataStream, data: list[Any]):
+        """Add a stream in the process list"""
         self.streams[stream] = data
 
     def run(self, criteria=None):
+        """Execute all streams in the process list"""
         print("\nRunning processor:")
         for stream, data in self.streams.items():
             try:
                 if not isinstance(data, list):
                     raise ValueError(
-                            f"Data for {stream.stream_id} must be a list")
+                        f"Data for {stream.stream_id} must be a list")
                 filtered = stream.filter_data(data, criteria)
                 print(f"- {stream.process_batch(filtered)}")
             except Exception as e:
@@ -115,6 +120,7 @@ class StreamProcessor:
 
 
 def stream_demo(stream: DataStream, data: list[Any]):
+    """Demonstrate a stream process in detail"""
     if isinstance(stream, SensorStream):
         ttype = "Sensor"
     elif isinstance(stream, TransactionStream):
@@ -139,6 +145,7 @@ def stream_demo(stream: DataStream, data: list[Any]):
 
 
 def polymorphism_demo(criteria=None):
+    """Demonstrate the usage of the DataStream interface"""
     proc = StreamProcessor()
 
     proc.add_stream(SensorStream("SENSOR-001"), [20, "test", 35])
