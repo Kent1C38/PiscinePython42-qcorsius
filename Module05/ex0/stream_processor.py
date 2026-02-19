@@ -4,21 +4,24 @@ from abc import ABC
 
 
 class Log:
+    """A Log entry with a level of importance:
+        0: Info
+        1: Warn
+        2: Error"""
 
     def __init__(self, content: str, level: int):
         self.__content = content
         self.__level = level
-        match self.__level:
-            case 0: self.__prefix = "[INFO]"
-            case 1: self.__prefix = "[WARN]"
-            case 2: self.__prefix = "[ALERT]"
-            case _: self.__prefix = "[UNKNOWN]"
 
     def __str__(self):
-        return f"{self.__prefix} {self.__content}"
+        return f"{self.get_prefix()} {self.__content}"
 
     def get_prefix(self) -> str:
-        return self.__prefix
+        match self.__level:
+            case 0: return "[INFO]"
+            case 1: return "[WARN]"
+            case 2: return "[ALERT]"
+            case _: return "[UNKNOWN]"
 
     def get_content(self) -> str:
         return self.__content
@@ -28,13 +31,16 @@ class DataProcessor(ABC):
 
     @abstractmethod
     def process(self, data: Any) -> str:
+        """Process some data"""
         pass
 
     @abstractmethod
     def validate(self, data: Any) -> bool:
+        """Validate your data's type, if it matches your processor"""
         pass
 
     def format_output(self, result: str) -> str:
+        """Formats the result"""
         return "Processed data: {result}"
 
 
@@ -76,10 +82,17 @@ class LogProcessor(DataProcessor):
 
 
 def init_processor(processor: DataProcessor) -> None:
+    """Shows the right init sentence for your processor"""
     if isinstance(processor, TextProcessor):
-        print("Initializing Text Processor...")
+        ttype = "Text"
     elif isinstance(processor, NumericProcessor):
-        print("Initializing Numeric Processor...")
+        ttype = "Numeric"
+    elif isinstance(processor, LogProcessor):
+        ttype = "Log"
+    else:
+        ttype = "Unknown"
+
+    print(f"Initializing {ttype} Processor...")
 
 
 if __name__ == "__main__":
