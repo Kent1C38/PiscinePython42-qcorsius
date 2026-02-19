@@ -54,17 +54,17 @@ class Garden:
     def check_plant_health(plant: Plant):
         if plant.water_level < 1:
             raise PlantError(
-                    f"({plant.name}) Water level {plant.water_level} " +
-                    "is too low (min 1)")
+                f"({plant.name}) Water level {plant.water_level} " +
+                "is too low (min 1)")
         if plant.water_level > 10:
             raise PlantError(
-                    f"({plant.name}) Water level {plant.water_level} " +
-                    "is too high (max 10)"
+                f"({plant.name}) Water level {plant.water_level} " +
+                "is too high (max 10)"
             )
         if plant.sun_level < 2:
             raise PlantError(
-                    f"({plant.name}) Sunlight hours {plant.sun_level} " +
-                    "is too low (min 2)")
+                f"({plant.name}) Sunlight hours {plant.sun_level} " +
+                "is too low (min 2)")
         if plant.sun_level > 12:
             raise PlantError(
                 f"({plant.name}) Sunlight hours {plant.sun_level} " +
