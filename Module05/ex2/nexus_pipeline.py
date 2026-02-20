@@ -1,9 +1,15 @@
 from typing import Any, Protocol, Union
 from abc import ABC, abstractmethod
-from json import loads
+from json import loads, dumps
 from io import StringIO
 from csv import DictReader
-from time import time
+from time import time, perf_counter
+from collections import deque
+
+
+class ConversionError(Exception):
+    def __init__(self, msg: str):
+        super().__init__(msg)
 
 
 class ProcessingStage(Protocol):
@@ -13,20 +19,32 @@ class ProcessingStage(Protocol):
 
 class InputStage():
     def process(self, data: Any) -> dict:
-        print(f"Input: {data}")
+        print(f"Input: {type(data)} {data}")
         return data
 
 
-class TransformStage():
+class TransformStage:
     def process(self, data: Any) -> dict:
-        print(f"Transform: {data}")
-        return data
+        payload = data if isinstance(data, dict) else {"raw_data": data}
+
+        transformed = {
+            k: [
+                {sub_k: (sub_v.upper() if isinstance(sub_v, str) else sub_v)
+                 for sub_k, sub_v in item.items()} for
+                item in v if isinstance(item, dict)]
+            if isinstance(v, list)
+            else (v.upper() if isinstance(v, str) else v)
+            for k, v in payload.items()
+        }
+        print(f"Transform: {type(transformed)} {transformed}")
+        return transformed
 
 
 class OutputStage():
     def process(self, data: Any) -> str:
-        print(f"Output: {data}")
-        return data.__str__()
+        out = data.__str__()
+        print(f"Output: {type(out)} {data}")
+        return out
 
 
 class ProcessingPipeline(ABC):
@@ -58,14 +76,20 @@ class JSONAdapter(ProcessingPipeline):
         super().__init__(pipeline_id)
 
     def process(self, data: Any) -> Union[str, Any]:
-
+        print("Attempting JSON conversion...")
         try:
-            parsed = loads(data)
-        except Exception:
-            print(f"Error parsing json to dict! ({self.pipeline_id})")
-            return None
+            if isinstance(data, dict):
+                return self.run_pipeline(data)
+            if isinstance(data, list):
+                parsed = dumps(data, indent=2)
+            else:
+                parsed = loads(data)
 
-        return self.run_pipeline(parsed)
+            return self.run_pipeline(parsed)
+        except Exception as e:
+            raise ConversionError(
+                f"Error parsing json to dict!: {e} ({self.pipeline_id})")
+            return None
 
 
 class CSVAdapter(ProcessingPipeline):
@@ -74,12 +98,16 @@ class CSVAdapter(ProcessingPipeline):
         super().__init__(pipeline_id)
 
     def process(self, data: Any) -> Union[str, Any]:
+        print("Attempting CSV conversion...")
         try:
+            if isinstance(data, (dict, list)):
+                return self.run_pipeline(data)
             raw = StringIO(data.strip())
             reader = DictReader(raw)
-            parsed = [x for x in reader]
-        except Exception:
-            print(f"Error parsing csv to dict! ({self.pipeline_id})")
+            parsed = {"rows": [x for x in reader]}
+        except Exception as e:
+            raise ConversionError(
+                f"Error parsing csv to dict!: {e} ({self.pipeline_id})")
             return None
 
         return self.run_pipeline(parsed)
@@ -91,6 +119,7 @@ class StreamAdapter(ProcessingPipeline):
         super().__init__(pipeline_id)
 
     def process(self, data: Any) -> Union[str, Any]:
+        print("Attempting stream (packet) conversion...")
         try:
             if isinstance(data, list):
                 parsed = {
@@ -101,25 +130,89 @@ class StreamAdapter(ProcessingPipeline):
                 }
             else:
                 parsed = {"data": data, "type": "single_event"}
-        except Exception:
-            print(f"Error parsing stream to dict! ({self.pipeline_id})")
-            return None
+        except Exception as e:
+            raise ConversionError(
+                f"Error parsing stream to dict! {e} ({self.pipeline_id})")
 
-        return parsed
+        return self.run_pipeline(parsed)
 
 
-if __name__ == "__main__":
-    p = JSONAdapter("JSON-001")
-    p.add_stage(InputStage())
-    p.add_stage(TransformStage())
-    p.add_stage(OutputStage())
+class NexusManager():
+
+    def __init__(self):
+        self._pipelines: deque[ProcessingPipeline] = deque()
+
+    def add_pipeline(self, pipeline: ProcessingPipeline):
+        self._pipelines.append(pipeline)
+
+    def process_data(self, data: Any):
+        print("Starting pipeline processing...")
+        start = perf_counter()
+        processed_data = 0
+
+        current = data
+        try:
+            for processor in self._pipelines:
+                current = processor.process(current)
+                processed_data += 1
+                print()
+        except ConversionError as e:
+            print(f"Exception caught during pipeline run: {e}")
+            return
+        finally:
+            self._pipelines = deque()
+            print("Cleaned up pipeline")
+
+        end = perf_counter()
+        elapsed = end - start
+        print("---- Result ----")
+        print(current)
+        print("\n---- Pipeline Statistics ----")
+        print(f"Processed data {processed_data} times through this pipeline " +
+              f"in {elapsed:.6f}s")
+
+
+def test_csv_to_json_packet():
+    nexus = NexusManager()
+
+    j = JSONAdapter("JSON-001")
+    j.add_stage(InputStage())
+
+    s = StreamAdapter("Stream-001")
+    s.add_stage(InputStage())
+    s.add_stage(OutputStage())
 
     c = CSVAdapter("CSV-001")
     c.add_stage(InputStage())
-    c.add_stage(OutputStage())
+    c.add_stage(TransformStage())
 
-    p.process('{"test": 42, "name": "Nexus demo"}')
-    print()
-    c.process("""user,action,timestamp
-Alice,login,2024-05-20
-Bob,upload,2024-05-24""")
+    nexus.add_pipeline(c)
+    nexus.add_pipeline(j)
+    nexus.add_pipeline(s)
+
+    nexus.process_data("name,value\ntest,42\nkent,38")
+
+
+def test_json_error():
+
+    nexus = NexusManager()
+
+    j = JSONAdapter("JSON-002")
+    j.add_stage(InputStage())
+    j.add_stage(TransformStage())
+    j.add_stage(OutputStage())
+
+    nexus.add_pipeline(j)
+
+    nexus.process_data("{\"test\': 42}")  # invalid data
+
+
+if __name__ == "__main__":
+    print("=== CODE NEXUS DEMO ===")
+
+    print("\n=== Trying with a complete pipeline" +
+          ": CSV -> JSON -> Stream (packet) ===")
+    test_csv_to_json_packet()
+
+    print("\n=== Trying with an invalid data (json) ===")
+    test_json_error()
