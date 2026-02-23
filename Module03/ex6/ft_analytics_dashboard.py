@@ -20,6 +20,8 @@ def list_comprehension_tests(players_list: list[Player]):
     print(f"High scorers (>2000): {high_scorers}")
     doubled_scores = [x.get_score() * 2 for x in players_list]
     print(f"Doubled scores: {doubled_scores}")
+    player_names = [x.get_name() for x in players_list]
+    print(f"Active players: {player_names}")
 
 
 def dict_comprehension_tests(players_list: list[Player]):

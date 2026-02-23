@@ -5,7 +5,6 @@ def parse_to_inv(string: str, inv: dict):
     try:
         tmp = string.split(":")
         inv[tmp[0]] = int(tmp[1])
-        print(f"Added {tmp[0]} ({int(tmp[1])}) to inventory")
     except ValueError as e:
         print(f"Error occured while parsing data to inventory: {e}")
 
@@ -19,8 +18,10 @@ def count_items(*arg):
 
 def show_inv(inv: dict):
     total_items = count_items(*inv.values())
-    for item, count in inv.items():
-        print(f"{item}: {count} units ({count/total_items*100:.1f})")
+    sorted_inv = dict(
+        sorted(inv.items(), key=lambda item: item[1], reverse=True))
+    for item, count in sorted_inv.items():
+        print(f"{item}: {count} units ({count/total_items*100:.1f}%)")
 
 
 def get_most_item(inv: dict):

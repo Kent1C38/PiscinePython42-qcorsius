@@ -1,3 +1,6 @@
+from time import perf_counter
+
+
 class EventStats:
     def __init__(self):
         self.total_events = 0
@@ -128,12 +131,16 @@ if __name__ == "__main__":
 
     print("=== Game Data Stream Processor ===")
     print("\nProcessing {tests_number} events...\n")
+    time_start = perf_counter()
     for i in range(tests_number):
         event = next(generator)
         history += [event]
+    time_end = perf_counter()
 
     print("\n=== Stream Analytics ===")
     stats.infos()
+    elapsed = time_end - time_start
+    print(f"Processing time: {elapsed: 0.3f}s")
 
     print("\n=== Generator Demo ===")
     fibo_sequ = fibonacci_sequence()
