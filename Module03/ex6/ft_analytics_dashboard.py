@@ -1,5 +1,5 @@
 class Player:
-    def __init__(self, name: str, score: int, achievements: set[str]):
+    def __init__(self, name: str, score: int, achievements: set[str]) -> None:
         self.__name = name
         self.__score = score
         self.__achievements = achievements
@@ -14,17 +14,20 @@ class Player:
         return self.__achievements
 
 
-def list_comprehension_tests(players_list: list[Player]):
+def list_comprehension_tests(players_list: list[Player]) -> None:
     print("\n=== List Comprehension Examples ===")
+
     high_scorers = [x.get_name() for x in players_list if x.get_score() > 2000]
     print(f"High scorers (>2000): {high_scorers}")
+
     doubled_scores = [x.get_score() * 2 for x in players_list]
     print(f"Doubled scores: {doubled_scores}")
+
     player_names = [x.get_name() for x in players_list]
     print(f"Active players: {player_names}")
 
 
-def dict_comprehension_tests(players_list: list[Player]):
+def dict_comprehension_tests(players_list: list[Player]) -> None:
     print("\n=== Dict Comprehension Examples ===")
 
     player_scores = {x.get_name(): x.get_score() for x in players}
@@ -47,7 +50,7 @@ def dict_comprehension_tests(players_list: list[Player]):
     print(f"Achievement count: {achievement_count}")
 
 
-def set_comprehension_tests(players_list: list[Player]):
+def set_comprehension_tests(players_list: list[Player]) -> None:
     print("\n=== Set Comprehension Examples ===")
 
     unique_achievements = {
@@ -58,7 +61,7 @@ def set_comprehension_tests(players_list: list[Player]):
     print(f"Unique achievements: {unique_achievements}")
 
 
-def show_global_analytics(players_list: list[Player]):
+def show_global_analytics(players_list: list[Player]) -> None:
     print("\n=== Global Analysis ===")
     total_players = len(players_list)
     print(f"Total players: {total_players}")

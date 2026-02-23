@@ -1,3 +1,4 @@
+from typing import Generator
 from time import perf_counter
 
 
@@ -16,7 +17,7 @@ class EventStats:
 
 
 class Player:
-    def __init__(self, name: str, base_level: int):
+    def __init__(self, name: str, base_level: int) -> None:
         if self._is_name_valid(name) and self._is_base_level_valid(base_level):
             self._name = name
             self._level = base_level
@@ -38,7 +39,7 @@ class Player:
 
 
 class Event:
-    def __init__(self, ttype: str, player: Player):
+    def __init__(self, ttype: str, player: Player) -> None:
         if self._is_valid_event(ttype, player):
             self._type = ttype
             self._player = player
@@ -81,7 +82,7 @@ class Event:
                 print("Unknown Event")
 
 
-def fibonacci_sequence():
+def fibonacci_sequence() -> Generator:
     fibo = [0, 1]
     curr = 0
     while True:
@@ -91,7 +92,7 @@ def fibonacci_sequence():
         curr += 1
 
 
-def prime_sequence():
+def prime_sequence() -> Generator:
     curr = 2
     while True:
         is_prime = True
@@ -109,7 +110,7 @@ def prime_sequence():
         curr += 1
 
 
-def gen_event(player_list: list, stats: EventStats) -> Event:
+def gen_event(player_list: list, stats: EventStats) -> Generator:
     events = ["levelup", "treasure", "kill"]
     gen_call = 0
     while True:
@@ -124,13 +125,15 @@ def gen_event(player_list: list, stats: EventStats) -> Event:
 if __name__ == "__main__":
     history = []
     stats = EventStats()
+
     players = [Player("Alice", 1), Player("Bob", 5), Player("Alex", 2),
                Player("Carole", 10), Player("Camille", 6)]
+
     generator = gen_event(players, stats)
     tests_number = 1000
 
     print("=== Game Data Stream Processor ===")
-    print("\nProcessing {tests_number} events...\n")
+    print(f"\nProcessing {tests_number} events...\n")
     time_start = perf_counter()
     for i in range(tests_number):
         event = next(generator)

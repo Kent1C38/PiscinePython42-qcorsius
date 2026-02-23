@@ -1,7 +1,7 @@
 from sys import argv
 
 
-def parse_to_inv(string: str, inv: dict):
+def parse_to_inv(string: str, inv: dict) -> None:
     try:
         tmp = string.split(":")
         inv[tmp[0]] = int(tmp[1])
@@ -9,14 +9,14 @@ def parse_to_inv(string: str, inv: dict):
         print(f"Error occured while parsing data to inventory: {e}")
 
 
-def count_items(*arg):
+def count_items(*arg) -> int:
     total = 0
     for item in arg:
         total += item
     return total
 
 
-def show_inv(inv: dict):
+def show_inv(inv: dict) -> None:
     total_items = count_items(*inv.values())
     sorted_inv = dict(
         sorted(inv.items(), key=lambda item: item[1], reverse=True))
@@ -24,7 +24,7 @@ def show_inv(inv: dict):
         print(f"{item}: {count} units ({count/total_items*100:.1f}%)")
 
 
-def get_most_item(inv: dict):
+def get_most_item(inv: dict) -> str:
     biggest = ([], 0)
     for item, count in inv.items():
         if count > biggest[1]:
@@ -34,7 +34,7 @@ def get_most_item(inv: dict):
     return biggest
 
 
-def get_least_item(inv: dict):
+def get_least_item(inv: dict) -> str:
     lowest = None
     for item, count in inv.items():
         if lowest is None or count < lowest[1]:
@@ -55,10 +55,15 @@ def concat_str_list(ls: list) -> str:
 
 
 if __name__ == "__main__":
+    print("=== Inventory System Analysis ===")
+
+    if len(argv) <= 1:
+        print("Yout inventory is empty!")
+        exit(0)
+
     inventory = {}
     for arg in argv[1:]:
         parse_to_inv(arg, inventory)
-    print("=== Inventory System Analysis ===")
     print(f"Total items in inventory: {count_items(*inventory.values())}")
     print(f"Unique items count: {len(inventory.keys())}")
 
@@ -74,10 +79,17 @@ if __name__ == "__main__":
           + f"{concat_str_list(least_item[0])} ({least_item[1]} units)")
 
     print("\n=== Item Categories ===")
-    moderate_category = {k: v for k, v in inventory.items() if v >= 4}
-    scarce_category = {k: v for k, v in inventory.items() if v < 4}
-    print(f"Moderate: {moderate_category}")
-    print(f"Scarce: {scarce_category}")
+    categories_def = {
+        "moderate": lambda s: s >= 4,
+        "scarce": lambda s: s < 4
+    }
+
+    categories = {cat_name: {k: v
+                             for k, v in inventory.items()
+                             if condition(v)}
+                  for cat_name, condition in categories_def.items()}
+    for cat in categories_def.keys():
+        print(f"{cat.capitalize()}: {categories[cat]}")
 
     print("\n=== Management Suggestions ===")
     refill_needed = [k for k, v in inventory.items() if v <= 1]

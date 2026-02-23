@@ -3,7 +3,7 @@ from math import sqrt
 
 class Coord:
 
-    def __init__(self, x: int, y: int, z: int):
+    def __init__(self, x: int, y: int, z: int) -> None:
         self._x = x
         self._y = y
         self._z = z
@@ -28,7 +28,7 @@ class Coord:
             parsed_coord = Coord(int(tmp[0]), int(tmp[1]), int(tmp[2]))
             print(f"Parsed position: {parsed_coord.get()}")
             return parsed_coord
-        except ValueError as e:
+        except Exception as e:
             print(f"Parsing invalid coordinates: \"{string}\"")
             print(f"Error parsing coordinates: {e}")
 
