@@ -24,6 +24,8 @@ class Coord:
     def from_str(string: str) -> "Coord":
         tmp = string.split(",")
         try:
+            if len(tmp) > 3:
+                raise Exception("Too many arguments")
             print(f"Parsing coordinates \"{string}\"")
             parsed_coord = Coord(int(tmp[0]), int(tmp[1]), int(tmp[2]))
             print(f"Parsed position: {parsed_coord.get()}")
@@ -51,13 +53,20 @@ if __name__ == "__main__":
           f"{distance_between_points(origin, pos1): 0.2f}")
 
     print()
-    pos2 = Coord.from_str("3,4,0")
-    print(f"Distance between {origin.get()} and {pos2.get()}:" +
-          f"{distance_between_points(origin, pos2): 0.2f}")
+    pos2 = Coord.from_str("1,2,3")
+
+    print()
+    try:
+        pos3 = Coord.from_str("3,4,5,6")
+        print(f"Distance between {origin.get()} and {pos3.get()}:" +
+              f"{distance_between_points(origin, pos3): 0.2f}")
+    except Exception as e:
+        print(e)
 
     print()
     pos_err = Coord.from_str("abc,def,ghi")
 
     print("\nUnpacking demo:")
-    x, y, z = pos2.get()
+    pos_temp = Coord(3, 4, 5)
+    x, y, z = pos_temp.get()
     print(f"Player as x={x}, y={y}, z={z}")

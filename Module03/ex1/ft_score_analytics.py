@@ -4,7 +4,7 @@ if __name__ == "__main__":
     print("=== Player Score Analytics ===")
     if len(argv) <= 1:
         print("No scores provided. Usage:" +
-              "python3.13 ft_score_analytics.py <score1> <score2> ...")
+              "ft_score_analytics.py <score1> <score2> ...")
     else:
         valid = True
         scores = []

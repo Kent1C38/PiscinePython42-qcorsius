@@ -3,13 +3,13 @@ from time import perf_counter
 
 
 class EventStats:
-    def __init__(self):
+    def __init__(self) -> None:
         self.total_events = 0
         self.treasure_events = 0
         self.levelup_event = 0
         self.kill_events = 0
 
-    def infos(self):
+    def infos(self) -> None:
         print(f"Total events processed: {self.total_events}")
         print(f"Level up events: {self.levelup_event}")
         print(f"Treasure found events: {self.treasure_events}")
