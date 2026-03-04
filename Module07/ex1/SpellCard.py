@@ -14,3 +14,8 @@ class SpellCard(Card):
 
     def resolve_effect(self, targets: list) -> dict:
         return {"target_hits": targets, "effect": self.effect_type}
+
+    def get_card_info(self) -> dict:
+        info = super().get_card_info()
+        info["effect_type"] = self.effect_type
+        return info

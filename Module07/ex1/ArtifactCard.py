@@ -13,3 +13,12 @@ class ArtifactCard(Card):
             return {"card_played": self.name, "mana_used": self.cost,
                     "effect": f"Permanent: {self.effect}"}
         return None
+
+    def activate_ability(self) -> dict:
+        return {"active_effect": self.effect, "durability": self.durability}
+
+    def get_card_info(self) -> dict:
+        info = super().get_card_info()
+        info["durability"] = self.durability
+        info["effect"] = self.effect
+        return info
