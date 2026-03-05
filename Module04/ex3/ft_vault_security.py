@@ -20,7 +20,8 @@ class SecureVault:
         self.__path = path
 
     def extract(self) -> str:
-        Logger.info("\nSecure Extraction starting...")
+        print()
+        Logger.info("Secure Extraction starting...")
         try:
             with open(self.__path, "r") as archive:
                 data = archive.read()
@@ -31,7 +32,8 @@ class SecureVault:
             return None
 
     def preserve(self, data: str):
-        Logger.info("\nSecure Preservation starting...")
+        print()
+        Logger.info("Secure Preservation starting...")
         try:
             with open(self.__path, "x") as archive:
                 archive.write(data)
@@ -45,7 +47,5 @@ if __name__ == "__main__":
     vault = SecureVault("secure_vault.txt")
     data = vault.extract()
     vault.preserve("CLASSIFIED: Python is such a boring language")
-    print()
     vault.preserve("CLASSIFIED: This is a test")
-    print()
     data = vault.extract()
