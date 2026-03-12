@@ -34,4 +34,5 @@ if __name__ == "__main__":
         print(f"\nDrew {card.name} ({get_type(card)})")
         print(f"Play results: {card.play(game_state)}")
 
-    print("\nPolymorphism in action: Same interface, different card behaviors!")
+    print("\nPolymorphism in action: Same interface,"
+          "different card behaviors!")
