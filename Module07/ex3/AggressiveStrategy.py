@@ -12,9 +12,12 @@ class AggressiveStrategy(GameSrategy):
 
         sorted_hand = sorted(hand, key=lambda x: x.cost)
 
+        targets = self.prioritize_targets(["Enemy Player"])
+
         for card in sorted_hand:
             if card.cost <= available_mana:
                 print(card.play({"available_mana": available_mana}))
+                cards_played.append(card.name)
                 available_mana -= card.cost
                 mana_used += card.cost
 
@@ -23,12 +26,8 @@ class AggressiveStrategy(GameSrategy):
                 if hasattr(card, "effect_type"):
                     for enum_card in FantasySpells:
                         if enum_card.get_card() == card:
-                            damage += enum_card.get_damage_dealt()
-                    card.resolve_effect()
-
-        print([x.name for x in sorted_hand])
-
-        targets = self.prioritize_targets(["Enemy Player"])
+                            damage += enum_card.get_power()
+                    card.resolve_effect(targets)
 
         for creature in battlefield:
             if hasattr(creature, "attack"):
