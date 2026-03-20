@@ -4,7 +4,6 @@ from json import loads, dumps
 from io import StringIO
 from csv import DictReader
 from time import time, perf_counter
-from collections import deque
 
 
 class ConversionError(Exception):
@@ -50,16 +49,16 @@ class OutputStage():
 class ProcessingPipeline(ABC):
 
     def __init__(self, pipeline_id: str):
-        self._stages: list[ProcessingStage] = list()
+        self.__stages: list[ProcessingStage] = list()
         self.pipeline_id = pipeline_id
 
     def add_stage(self, stage: ProcessingStage) -> None:
-        self._stages.append(stage)
+        self.__stages.append(stage)
 
     def run_pipeline(self, data: Any) -> Any:
         current_data = data
         try:
-            for stage in self._stages:
+            for stage in self.__stages:
                 current_data = stage.process(current_data)
             return current_data
         except Exception as e:
@@ -140,10 +139,10 @@ class StreamAdapter(ProcessingPipeline):
 class NexusManager():
 
     def __init__(self):
-        self._pipelines: deque[ProcessingPipeline] = deque()
+        self.__pipelines: list[ProcessingPipeline] = list()
 
     def add_pipeline(self, pipeline: ProcessingPipeline):
-        self._pipelines.append(pipeline)
+        self.__pipelines.append(pipeline)
 
     def process_data(self, data: Any):
         print("Starting pipeline processing...")
@@ -152,7 +151,7 @@ class NexusManager():
 
         current = data
         try:
-            for processor in self._pipelines:
+            for processor in self.__pipelines:
                 current = processor.process(current)
                 processed_data += 1
                 print()
@@ -160,7 +159,7 @@ class NexusManager():
             print(f"Exception caught during pipeline run: {e}")
             return
         finally:
-            self._pipelines = deque()
+            self.__pipelines = list()
             print("Cleaned up pipeline")
 
         end = perf_counter()

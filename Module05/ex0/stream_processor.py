@@ -101,7 +101,8 @@ if __name__ == "__main__":
 
     stream_line = {NumericProcessor(): [1, 2, 3, 4, 5],
                    TextProcessor(): "This is a test data sample.",
-                   LogProcessor(): Log("This works !", 0)}
+                   LogProcessor(): Log("This works !", 0),
+                   LogProcessor(): "test"}
 
     for processor, data in stream_line.items():
         print()

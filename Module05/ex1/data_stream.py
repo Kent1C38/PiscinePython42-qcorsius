@@ -16,11 +16,8 @@ class DataStream(ABC):
     def filter_data(self, data_batch: list[Any],
                     criteria: Optional[str] = None) -> list[Any]:
         """Retrieve a list of filtered data"""
-        if criteria is None:
-            return data_batch
+        return data_batch
 
-        return [item for item in data_batch if
-                criteria.lower() in str(item).lower()]
 
     def get_stats(self) -> dict[str, Union[str, int, float]]:
         """Retrieve stored stats"""
