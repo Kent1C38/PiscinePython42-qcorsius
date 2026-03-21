@@ -18,7 +18,6 @@ class DataStream(ABC):
         """Retrieve a list of filtered data"""
         return data_batch
 
-
     def get_stats(self) -> dict[str, Union[str, int, float]]:
         """Retrieve stored stats"""
         return {"uid": self.stream_id, "processed": self.count}
@@ -54,8 +53,9 @@ class TransactionStream(DataStream):
         super().__init__(stream_id)
 
     def process_batch(self, data_batch: list[Any]) -> str:
-        self.count = len(data_batch)
-        self.gains = sum(data_batch)
+        numbers = [x for x in data_batch if isinstance(x, (int, float))]
+        self.count = len(numbers)
+        self.gains = sum(numbers)
         return (f"Transaction analysis: {self.stream_id} " +
                 f"processed {self.count} items (total gains: {self.gains})")
 
