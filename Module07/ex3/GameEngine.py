@@ -16,12 +16,15 @@ class GameEngine():
     def simulate_turn(self) -> dict:
         print(f"\nSimulating turn with {self.__strategy.get_strategy_name()}")
         hand_dict = self.__factory.create_themed_deck(7)
+        print("Hand: ", end='')
+        print({k.name: v for k, v in hand_dict.items()})
 
         hand_list = []
         for card, nb in hand_dict.items():
             for _ in range(nb):
                 hand_list.append(card)
 
+        print("\nTurn Execution:")
         turn_result = self.__strategy.execute_turn(hand_list, ["Enemy Player"])
         self.__status["turn_simulated"] += 1
         self.__status["total_damage"] += turn_result["damage_dealt"]
@@ -30,6 +33,12 @@ class GameEngine():
 
     def get_engine_status(self) -> dict:
         return self.__status
+
+    def get_factory(self) -> CardFactory:
+        return self.__factory
+
+    def get_strategy(self) -> GameSrategy:
+        return self.__strategy
 
 
 if __name__ == "__main__":

@@ -8,7 +8,7 @@ class SpellCard(Card):
 
     def play(self, game_state: dict) -> dict:
         if self.is_playable(game_state["available_mana"]):
-            return {"card_playerd": self.name, "mana_used": self.cost,
+            return {"card_played": self.name, "mana_used": self.cost,
                     "effect": self.effect_type}
         return None
 
