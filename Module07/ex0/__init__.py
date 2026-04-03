@@ -1,4 +1,3 @@
-from .CreatureCard import CreatureCard
-from .Card import Card
+from .Factories import AquaFactory, FlameFactory
 
-__all__ = [Card, CreatureCard]
+__all__ = [AquaFactory, FlameFactory]
