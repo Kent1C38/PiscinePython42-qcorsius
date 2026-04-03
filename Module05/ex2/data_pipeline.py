@@ -1,9 +1,9 @@
 from typing import Protocol, Any
-from ..ex0.data_processor import (DataProcessor,
-                                  NumericProcessor,
-                                  TextProcessor,
-                                  LogProcessor,
-                                  Log)
+from ex0.data_processor import (DataProcessor,
+                                NumericProcessor,
+                                TextProcessor,
+                                LogProcessor,
+                                Log)
 
 
 class ExportPlugin(Protocol):

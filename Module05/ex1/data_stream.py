@@ -1,8 +1,8 @@
-from ..ex0.data_processor import (DataProcessor,
-                                  NumericProcessor,
-                                  TextProcessor,
-                                  Log,
-                                  LogProcessor)
+from ex0.data_processor import (DataProcessor,
+                                NumericProcessor,
+                                TextProcessor,
+                                Log,
+                                LogProcessor)
 from typing import Any
 
 
