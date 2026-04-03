@@ -1,0 +1,33 @@
+import ex1
+
+
+if __name__ == "__main__":
+    healing_fac = ex1.HealingCreatureFactory()
+    print("Testing creatures with healing capability")
+    sproutling = healing_fac.create_base()
+    bloomelle = healing_fac.create_evolved()
+    print(" base")
+    print(sproutling.describe())
+    print(sproutling.attack())
+    print(sproutling.heal())
+    print(" evolved")
+    print(bloomelle.describe())
+    print(bloomelle.attack())
+    print(bloomelle.heal())
+
+    print("\nTesting creatures with transform capability")
+    transform_fac = ex1.TransformCreatureFactory()
+    shiftling = transform_fac.create_base()
+    morphagon = transform_fac.create_evolved()
+    print(" base")
+    print(shiftling.describe())
+    print(shiftling.attack())
+    print(shiftling.transform())
+    print(shiftling.attack())
+    print(shiftling.revert())
+    print(" evolved")
+    print(morphagon.describe())
+    print(morphagon.attack())
+    print(morphagon.transform())
+    print(morphagon.attack())
+    print(morphagon.revert())
