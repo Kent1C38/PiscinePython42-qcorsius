@@ -21,7 +21,7 @@ class Log:
 class DataProcessor(ABC):
 
     def __init__(self):
-        self.__out_index: int = 0
+        self._out_index: int = 0
         self._storage: list[str] = list()
 
     @abstractmethod
@@ -34,10 +34,10 @@ class DataProcessor(ABC):
 
     def output(self) -> tuple[int, str]:
         try:
-            out = (self.__out_index, self._storage[self.__out_index])
+            out = (self._out_index, self._storage.pop(0))
         except IndexError:
             return None
-        self.__out_index += 1
+        self._out_index += 1
         return out
 
 
@@ -58,7 +58,7 @@ class NumericProcessor(DataProcessor):
             for x in data:
                 self._storage.append(x.__str__())
         else:
-            self.s_torage.append(data.__str__())
+            self._storage.append(data.__str__())
 
 
 class TextProcessor(DataProcessor):

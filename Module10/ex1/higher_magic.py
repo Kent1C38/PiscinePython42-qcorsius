@@ -26,10 +26,9 @@ def spell_sequence(spells: list[callable]) -> callable:
 if __name__ == "__main__":
     print(*spell_combiner(lambda x: f"Hit {x}",
                           lambda x: f"Heal {x}")("Dragon"))
+
     print(power_amplifier(lambda: "Fireball ", 5)())
 
-    def is_spell_valid(spell: str):
-        return lambda: len(spell) <= 15
     print(conditional_caster(
         lambda x: len(x) <= 15, lambda x: f"Cast {x}")("fireball"))
 

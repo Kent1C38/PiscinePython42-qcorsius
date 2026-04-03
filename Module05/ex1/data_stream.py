@@ -1,172 +1,79 @@
-from typing import Optional, Any, Union
-from abc import abstractmethod, ABC
+from ..ex0.data_processor import (DataProcessor,
+                                  NumericProcessor,
+                                  TextProcessor,
+                                  Log,
+                                  LogProcessor)
+from typing import Any
 
 
-class DataStream(ABC):
-
-    def __init__(self, stream_id: str):
-        self.stream_id = stream_id
-        self.count = 0
-
-    @abstractmethod
-    def process_batch(self, data_batch: list[Any]) -> str:
-        """Processes a batch of data"""
-        pass
-
-    def filter_data(self, data_batch: list[Any],
-                    criteria: Optional[str] = None) -> list[Any]:
-        """Retrieve a list of filtered data"""
-        return data_batch
-
-    def get_stats(self) -> dict[str, Union[str, int, float]]:
-        """Retrieve stored stats"""
-        return {"uid": self.stream_id, "processed": self.count}
-
-
-class SensorStream(DataStream):
-
-    def __init__(self, stream_id: str):
-        super().__init__(stream_id)
-
-    def process_batch(self, data_batch: list[Any]) -> str:
-        self.count = len(data_batch)
-        numbers = [x for x in data_batch if isinstance(x, (int, float))]
-        self.avg = round(sum(numbers) / len(numbers), 2) if numbers else 0.0
-        return (f"Sensor analysis: {self.stream_id} " +
-                f"processed {self.count} items (avg: {self.avg})")
-
-    def filter_data(self, data_batch: list[Any],
-                    criteria: Optional[str] = None) -> list[Any]:
-        if criteria == "high_priority":
-            return [x for x in data_batch if
-                    isinstance(x, (int, float)) and x >= 30]
-        else:
-            return super().filter_data(data_batch, criteria)
-
-    def get_stats(self) -> str:
-        return super().get_stats() | {"average": self.avg}
-
-
-class TransactionStream(DataStream):
-
-    def __init__(self, stream_id: str):
-        super().__init__(stream_id)
-
-    def process_batch(self, data_batch: list[Any]) -> str:
-        numbers = [x for x in data_batch if isinstance(x, (int, float))]
-        self.count = len(numbers)
-        self.gains = sum(numbers)
-        return (f"Transaction analysis: {self.stream_id} " +
-                f"processed {self.count} items (total gains: {self.gains})")
-
-    def filter_data(self, data_batch: list[Any],
-                    criteria: Optional[str] = None) -> list[Any]:
-        if criteria == "high_priority":
-            return [x for x in data_batch if
-                    isinstance(x, (int, float)) and
-                    x < -200 or x > 200]
-        else:
-            return super().filter_data(data_batch, criteria)
-
-    def get_stats(self) -> str:
-        return super().get_stats() | {"gains": self.gains}
-
-
-class EventStream(DataStream):
-
-    def __init__(self, stream_id: str):
-        super().__init__(stream_id)
-
-    def process_batch(self, data_batch: list[Any]) -> str:
-        self.count = len(data_batch)
-        self.errors = len([x for x in data_batch if isinstance(x, str)
-                           and "error" in x.lower()])
-        return (f"Event analysis:  {self.stream_id} " +
-                f"processed {self.count} items (errors: {self.errors})")
-
-    def filter_data(self, data_batch: list[Any],
-                    criteria: Optional[str] = None) -> list[Any]:
-        if criteria == "high_priority":
-            return [x for x in data_batch if isinstance(x, str)
-                    and "error" in x.lower()]
-        else:
-            return super().filter_data(data_batch, criteria)
-
-
-class StreamProcessor:
+class DataStream:
 
     def __init__(self):
-        self.streams = {}
+        self.processors: list[DataProcessor] = list()
 
-    def add_stream(self, stream: DataStream, data: list[Any]):
-        """Add a stream in the process list"""
-        self.streams[stream] = data
+    def register_processor(self, proc: DataProcessor) -> None:
+        if not isinstance(proc, DataProcessor):
+            raise Exception(f"Could not register {proc}: Not a DataProcessor!")
+        self.processors.append(proc)
 
-    def run(self, criteria=None):
-        """Execute all streams in the process list"""
-        print("\nRunning processor:")
-        for stream, data in self.streams.items():
-            try:
-                if not isinstance(data, list):
-                    raise ValueError(
-                        f"Data for {stream.stream_id} must be a list")
-                filtered = stream.filter_data(data, criteria)
-                print(f"- {stream.process_batch(filtered)}")
-            except Exception as e:
-                print(f"Critical failure in {stream.stream_id}: {e}")
+    def process_stream(self, stream: list[Any]) -> None:
+        for data in stream:
+            ingested = False
+            for processor in self.processors:
+                if processor.validate(data):
+                    processor.ingest(data)
+                    ingested = True
+                    break
+            if not ingested:
+                print("DataStream error - can't process the following element:"
+                      f" {data}")
 
-
-def stream_demo(stream: DataStream, data: list[Any]):
-    """Demonstrate a stream process in detail"""
-    if isinstance(stream, SensorStream):
-        ttype = "Sensor"
-    elif isinstance(stream, TransactionStream):
-        ttype = "Transaction"
-    elif isinstance(stream, EventStream):
-        ttype = "Event"
-    else:
-        ttype = "Unknown"
-    print(f"Initializing demo {ttype} Stream...")
-    print(f"Stream ID: {stream.stream_id}")
-    print(f"Processing batch: {data}")
-    result = stream.process_batch(data)
-    print(f"Data analysis: {result}")
-    print(f"Stored statistics: {stream.get_stats()}")
-
-    print("\nTrying with filter 'high_priority'...")
-    filterd = stream.filter_data(data, "high_priority")
-    result = stream.process_batch(filterd)
-    print(f"Data analysis: {result}")
-    print(f"Stored statistics: {stream.get_stats()}")
-    print()
-
-
-def polymorphism_demo(criteria=None):
-    """Demonstrate the usage of the DataStream interface"""
-    proc = StreamProcessor()
-
-    proc.add_stream(SensorStream("SENSOR-001"), [20, "test", 35])
-    proc.add_stream(TransactionStream("TRANS-001"), [-300, 50, 430, -10])
-    proc.add_stream(EventStream("EVENT-001"),
-                    ["login", "Error: denied", "logout"])
-
-    proc.run(criteria)
+    def print_processors_stats(self) -> None:
+        print("=== DataStrea statistics ===")
+        if not self.processors:
+            print("No processors found, no data to show")
+        else:
+            for processor in self.processors:
+                print(f"{processor.__class__.__name__}: total "
+                      f"{len(processor._storage) + processor._out_index} items"
+                      " processed, "
+                      f"remaining {len(processor._storage)} on processor")
 
 
 if __name__ == "__main__":
+    print("=== Code Nexus - Data Stream ===")
 
-    print("=== CODE NEXUS - POLYMORPHIC STREAM SYSTEM ===\n")
+    print("\nInitialize Data Stream...")
+    ds = DataStream()
+    ds.print_processors_stats()
 
-    stream_demo(SensorStream("SENSOR-DEMO"), [10, 20, 35, 5, -2, 3, 8])
+    print("\nRegistering Numeric Processor...")
+    num_proc = NumericProcessor()
+    ds.register_processor(num_proc)
 
-    stream_demo(TransactionStream("TRANS-DEMO"),
-                [20, -30, 300, 51, -249, -800, 900])
+    data_stream = [10, 20, "hello",
+                   Log("Hello World!", Log.Level.INFO),
+                   Log("Critical Error!", Log.Level.ERROR),
+                   ["this", "is", "a", "test"],
+                   [5, 6]]
 
-    stream_demo(EventStream("EVENT-DEMO"),
-                ["login", "login", "logout", "error", "auth", "error"])
+    print(f"\nSend first batch of data on stream: {data_stream}")
+    ds.process_stream(data_stream)
+    ds.print_processors_stats()
 
-    print("\nPolymorphism Demo")
-    polymorphism_demo()
+    print("\nRegistering other data processors...")
+    text_proc = TextProcessor()
+    log_proc = LogProcessor()
+    ds.register_processor(text_proc)
+    ds.register_processor(log_proc)
+    print("Sending same data batch again...")
+    ds.process_stream(data_stream)
+    ds.print_processors_stats()
 
-    print("\nPolymorphism Filtered Demo")
-    polymorphism_demo("high_priority")
+    print("\nConsume some elements for the processors...")
+    for _ in range(2):
+        num_proc.output()
+    for _ in range(3):
+        text_proc.output()
+    log_proc.output()
+    ds.print_processors_stats()
