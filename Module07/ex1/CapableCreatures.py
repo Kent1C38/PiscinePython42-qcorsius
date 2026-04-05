@@ -19,7 +19,6 @@ class Bloomelle(Creature, HealCapability):
 
 
 class Shiftling(Creature, TransforfmCapability):
-
     def transform(self) -> str:
         self.transform_active = True
         return f"{self.name} shifts into a sharper form!"
