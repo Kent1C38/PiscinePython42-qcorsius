@@ -11,9 +11,16 @@ if __name__ == "__main__":
         exit(1)
 
     load_dotenv()
+
+    def get_env(key: str) -> str:
+        value = os.getenv(key)
+        if value is None:
+            return f"[WARN] {key} key not set in environment!"
+        else:
+            return value
     print("Configuration loaded...")
-    print(f"Mode: {os.getenv('MATRIX_MODE')}")
-    print(f"Database: {os.getenv('DATABASE_URL')}")
-    print(f"API Access: {os.getenv('API_KEY')}")
-    print(f"Log Level: {os.getenv('LOG_LEVEL')}")
-    print(f"Zion Network: {os.getenv('ZION_ENDPOINT')}")
+    print(f"Mode: {get_env('MATRIX_MODE')}")
+    print(f"Database: {get_env('DATABASE_URL')}")
+    print(f"API Access: {get_env('API_KEY')}")
+    print(f"Log Level: {get_env('LOG_LEVEL')}")
+    print(f"Zion Network: {get_env('ZION_ENDPOINT')}")

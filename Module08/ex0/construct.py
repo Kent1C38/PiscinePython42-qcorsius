@@ -27,9 +27,10 @@ if __name__ == "__main__":
         print("Safe to install packages without affecting the global system")
 
         print("\nPackage installation path:")
-        print(f"{site.getusersitepackages()}")
+        print(f"{site.getsitepackages()}")
     else:
         print("\nTo enter the construct, run:")
         print("python3 -m venv matrix_env")
         print("source matrix_env/bin/activate # On Unix")
-        print("\nmatrix_env\\Scripts\\activate # On Windows")
+        print("matrix_env\\Scripts\\activate # On Windows")
+        print("\nThen run this program again")

@@ -56,7 +56,8 @@ def analyze_data():
     plt.title("Matrix Data Visualization")
     plt.xlabel("Columns")
     plt.ylabel("Rows")
-    plt.show()
+    plt.savefig("output.png")
+    print("\nSaved image as 'output.png'")
 
 
 def main():
