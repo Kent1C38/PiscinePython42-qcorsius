@@ -1,20 +1,23 @@
 def mage_counter() -> callable:
-    if not hasattr(mage_counter, "counter"):
-        mage_counter.counter = 0
+    count = 0
 
-    mage_counter.counter += 1
-    return lambda: mage_counter.counter
+    def increment():
+        nonlocal count
+        count += 1
+        return count
+
+    return lambda: increment()
 
 
 def spell_accumulator(initial_power: int) -> callable:
-    if not hasattr(spell_accumulator, "power"):
-        spell_accumulator.power = initial_power
+    power = initial_power
 
-    def accumulate(power):
-        spell_accumulator.power += power
-        return spell_accumulator.power
+    def accumulate(to_add: int):
+        nonlocal power
+        power += to_add
+        return power
 
-    return lambda x: accumulate(x)
+    return lambda to_add: accumulate(to_add)
 
 
 def enchantment_factory(enchantment_type: str) -> callable:
@@ -22,33 +25,43 @@ def enchantment_factory(enchantment_type: str) -> callable:
 
 
 def memory_vault() -> dict[str, callable]:
-    if not hasattr(memory_vault, "storage"):
-        memory_vault.storage = dict()
+    storage = dict()
 
     def store(key, value):
-        memory_vault.storage[key] = value
+        nonlocal storage
+        storage[key] = value
 
     def recall(key):
-        return memory_vault.storage.get(key, "Memory not found!")
+        nonlocal storage
+        return storage.get(key, "Memory not found")
 
-    return {"store": lambda key, val: store(key, val),
-            "recall": lambda key: recall(key)}
+    return {"store": store,
+            "recall": recall}
 
 
 if __name__ == "__main__":
+    print("Counter demo:")
+    counter_1 = mage_counter()
+    counter_2 = mage_counter()
     for _ in range(5):
-        mage_counter()()
-    print(mage_counter()())
+        counter_1()
+    print(f"Counter 1: {counter_1()}")
+    print(f"Counter 2: {counter_2()}")
 
-    accumulator = spell_accumulator(5)
-    print(accumulator(10))
-    print(accumulator(15))
+    print("\nAccumulator demo:")
 
+    accumulator_1 = spell_accumulator(5)
+    accumulator_2 = spell_accumulator(0)
+    print(f"Accumulator 1: {accumulator_1(10)}")
+    print(f"Accumulator 2: {accumulator_2(50)}")
+
+    print("\nEnchat Factory demo:")
     fire_factory = enchantment_factory("Flaming")
 
     print(fire_factory("Sword"))
     print(fire_factory("Arrow"))
 
+    print("\nMemory vault demo")
     mem_vault = memory_vault()
     mem_vault["store"]("test", "test_val")
     print(mem_vault["recall"]("test"))
