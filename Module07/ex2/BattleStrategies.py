@@ -33,7 +33,7 @@ class DefensiveStrategy(BattleStrategy):
     def is_valid(self, creature: Creature) -> bool:
         return isinstance(creature, HealCapability)
 
-    def act(self, creature: Creature) -> None:
+    def act(self, creature: Creature) -> str:
         if not self.is_valid(creature):
             self.invalid_creature_error(creature)
 

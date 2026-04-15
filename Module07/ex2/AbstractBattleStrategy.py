@@ -8,7 +8,7 @@ class BattleStrategy(ABC):
         ...
 
     @abstractmethod
-    def act(self, creature: Creature) -> None:
+    def act(self, creature: Creature) -> str:
         ...
 
     def invalid_creature_error(self, creature: Creature):

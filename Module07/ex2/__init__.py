@@ -3,6 +3,6 @@ from .BattleStrategies import (DefensiveStrategy,
                                NormalStrategy)
 
 
-__all__ = [DefensiveStrategy,
-           AggressiveStrategy,
-           NormalStrategy]
+__all__ = ["DefensiveStrategy",
+           "AggressiveStrategy",
+           "NormalStrategy"]
