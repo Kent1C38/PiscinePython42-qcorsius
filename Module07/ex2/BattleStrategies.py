@@ -9,7 +9,7 @@ class NormalStrategy(BattleStrategy):
 
     def act(self, creature: Creature) -> str:
         if not self.is_valid(creature):
-            self.invalid_creature_error(creature)
+            self.raise_invalid_creature_error(creature)
 
         turn = creature.attack()
         return turn
@@ -21,7 +21,7 @@ class AggressiveStrategy(BattleStrategy):
 
     def act(self, creature: Creature) -> str:
         if not self.is_valid(creature):
-            self.invalid_creature_error(creature)
+            self.raise_invalid_creature_error(creature)
 
         turn = creature.transform()
         turn += f"\n{creature.attack()}"

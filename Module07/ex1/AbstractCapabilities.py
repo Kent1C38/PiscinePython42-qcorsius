@@ -7,7 +7,7 @@ class HealCapability(ABC):
         ...
 
 
-class TransforfmCapability(ABC):
+class TransformCapability(ABC):
     def __init__(self):
         self.transform_active = False
 

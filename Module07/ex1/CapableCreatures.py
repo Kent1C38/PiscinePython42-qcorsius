@@ -1,5 +1,5 @@
 from ex0.AbstractCreature import Creature
-from .Capabilities import HealCapability, TransforfmCapability
+from .AbstractCapabilities import HealCapability, TransformCapability
 
 
 class Sproutling(Creature, HealCapability):
@@ -18,7 +18,7 @@ class Bloomelle(Creature, HealCapability):
         return f"{self.name} heals itself for a large amount!"
 
 
-class Shiftling(Creature, TransforfmCapability):
+class Shiftling(Creature, TransformCapability):
     def transform(self) -> str:
         self.transform_active = True
         return f"{self.name} shifts into a sharper form!"
@@ -34,7 +34,7 @@ class Shiftling(Creature, TransforfmCapability):
             return f"{self.name} attacks normally"
 
 
-class Morphagon(Creature, TransforfmCapability):
+class Morphagon(Creature, TransformCapability):
     def transform(self) -> str:
         self.transform_active = True
         return f"{self.name} morphs into a draconic battle form!"

@@ -11,6 +11,6 @@ class BattleStrategy(ABC):
     def act(self, creature: Creature) -> str:
         ...
 
-    def invalid_creature_error(self, creature: Creature):
+    def raise_invalid_creature_error(self, creature: Creature):
         raise Exception(f"{creature.name} is not suitable "
                         f"for {self.__class__.__name__} !")
