@@ -2,7 +2,7 @@ import ex0
 from ex0.AbstractFactory import CreatureFactory
 
 
-def check_creaure_creation(factory: CreatureFactory):
+def check_creaure_creation(factory: CreatureFactory) -> None:
     print("Testing factory...")
     base = factory.create_base()
     evolved = factory.create_evolved()
@@ -12,7 +12,7 @@ def check_creaure_creation(factory: CreatureFactory):
     print(evolved.attack())
 
 
-def battle_base_test(fac1: CreatureFactory, fac2: CreatureFactory):
+def battle_base_test(fac1: CreatureFactory, fac2: CreatureFactory) -> None:
     print("Testing battle...")
     base1 = fac1.create_base()
     base2 = fac2.create_base()
