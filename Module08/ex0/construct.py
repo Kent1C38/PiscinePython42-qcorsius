@@ -27,7 +27,7 @@ if __name__ == "__main__":
         print("Safe to install packages without affecting the global system")
 
         print("\nPackage installation path:")
-        print(f"{site.getsitepackages()}")
+        print(*site.getsitepackages())
     else:
         print("\nTo enter the construct, run:")
         print("python3 -m venv matrix_env")

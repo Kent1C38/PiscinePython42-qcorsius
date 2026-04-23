@@ -14,9 +14,14 @@ if __name__ == "__main__":
 
     def get_env(key: str) -> str:
         value = os.getenv(key)
+
         if value is None:
             return f"[WARN] {key} key not set in environment!"
         else:
+            if key == "MATRIX_MODE":
+                if value not in ["development", "production"]:
+                    print(f"[WARN] Invalid value for MODE key: {value}")
+                    return None
             return value
     print("Configuration loaded...")
     print(f"Mode: {get_env('MATRIX_MODE')}")

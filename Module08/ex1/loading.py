@@ -18,7 +18,7 @@ def check_dependencies():
         for dep in deps.difference(found):
             print(f"[ERROR] Missing dependency: {dep}")
         print("\nInstall with pip install -r <requirement file> OR poetry"
-              " install inside a venv")
+              " install")
         return None
 
     return versions
