@@ -4,13 +4,13 @@ from typing import Optional
 
 
 class SpaceStation(BaseModel):
-    station_id: str = Field(strict=True, min_length=3, max_length=20)
+    station_id: str = Field(strict=True, min_length=3, max_length=10)
     name: str = Field(strict=True, min_length=1, max_length=50)
     crew_size: int = Field(strict=True, ge=1, le=20)
     power_level: float = Field(strict=True, ge=0.0, le=100.0)
     oxygen_level: float = Field(strict=True, ge=0.0, le=100.0)
-    last_maintenance: datetime = Field(strict=True)
-    is_operational: bool = Field(strict=True)
+    last_maintenance: datetime = Field()
+    is_operational: bool = Field(default=True)
     notes: Optional[str] = Field(max_length=200, default=None)
 
 
@@ -21,8 +21,8 @@ try:
         crew_size=6,
         power_level=85.5,
         oxygen_level=92.3,
-        last_maintenance=datetime.fromisoformat("2036-04-08"),
-        is_operational=True,
+        last_maintenance="2036-04-08T10:00:42Z",
+        # is_operational=True,
     )
 
     print(f"""Space Data Validation

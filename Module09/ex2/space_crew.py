@@ -17,19 +17,19 @@ class Rank(Enum):
 
 class CrewMember(BaseModel):
     member_id: str = Field(strict=True, min_length=3, max_length=10)
-    name: str = Field(strict=True, min_length=3, max_length=50)
-    rank: Rank = Field(strict=True)
+    name: str = Field(strict=True, min_length=2, max_length=50)
+    rank: Rank = Field()
     age: int = Field(strict=True, ge=18, le=80)
     specialization: str = Field(strict=True, min_length=3, max_length=30)
     years_experience: int = Field(strict=True, ge=0, le=50)
-    is_active: bool = Field(strict=True, default=True)
+    is_active: bool = Field(default=True)
 
 
 class SpaceMission(BaseModel):
     mission_id: str = Field(strict=True, min_length=5, max_length=15)
     mission_name: str = Field(strict=True, min_length=3, max_length=100)
     destination: str = Field(strict=True, min_length=3, max_length=50)
-    launch_date: datetime = Field(strict=True)
+    launch_date: datetime = Field()
     duration_days: int = Field(strict=True, ge=1, le=3650)
     crew: list[CrewMember] = Field(strict=True, min_length=1, max_length=12)
     mission_status: str = Field(strict=True, default="planned")
@@ -38,15 +38,14 @@ class SpaceMission(BaseModel):
     @model_validator(mode='after')
     def validator(self) -> "SpaceMission":
         if not self.mission_id.startswith('M'):
-            raise ValidationError("Mission id should startt with 'M'")
-        has_high_graded = False
-        for cm in self.crew:
-            if cm.rank == Rank.COMMANDER or cm.rank == Rank.CAPTAIN:
-                has_high_graded = True
-            if not cm.is_active:
-                raise ValidationError("All crew members must be active")
-        if not has_high_graded:
+            raise ValidationError("Mission id should start with 'M'")
+
+        if not any(cm.rank == Rank.COMMANDER or cm.rank == Rank.CAPTAIN
+                   for cm in self.crew):
             raise ValidationError("A Commander or a Captain must be present")
+
+        if not all(cm.is_active for cm in self.crew):
+            raise ValidationError("All crew members must be active")
 
         if self.duration_days > 365:
             experienced_crew = [
@@ -72,7 +71,7 @@ if __name__ == "__main__":
                 CrewMember(
                     member_id="m001",
                     name="Test Commander",
-                    rank=Rank.COMMANDER,
+                    rank="commander",
                     age=36,
                     specialization="Pilot",
                     years_experience=8
@@ -95,6 +94,7 @@ Destination: {mission.destination}
 Duration: {mission.duration_days} days
 Budget: ${mission.budget_millions}M
 Crew Size: {len(mission.crew)}
+Mission Status: {mission.mission_status}
 Crew Members:""")
         for member in mission.crew:
             print(f"- {member.name} ({member.rank.value})"

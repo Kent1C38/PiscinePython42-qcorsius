@@ -17,9 +17,9 @@ class ContactType(Enum):
 
 class AlienContact(BaseModel):
     contact_id: str = Field(strict=True, min_length=5, max_length=15)
-    timestamp: datetime = Field(strict=True)
+    timestamp: datetime = Field()
     location: str = Field(strict=True, min_length=3, max_length=100)
-    contact_type: ContactType = Field(strict=True)
+    contact_type: ContactType = Field()
     signal_strength: float = Field(strict=True, ge=0.0, le=10.0)
     duration_minutes: int = Field(strict=True, ge=1, le=1440)
     witness_count: int = Field(strict=True, ge=1, le=100)
@@ -37,7 +37,7 @@ class AlienContact(BaseModel):
             raise ValidationException("Telepathic contacts must have at least"
                                       " three witnesses")
         if self.signal_strength > 7.0 and not self.message_recieved:
-            raise ValidationException("Strong signals must have message")
+            raise ValidationException("Strong signals must have a message")
 
         return self
 
@@ -48,7 +48,7 @@ if __name__ == "__main__":
             contact_id="AC_fbusb",
             timestamp=datetime.now(),
             location="42 Lyon",
-            contact_type=ContactType.PHYSICAL,
+            contact_type="physical",
             signal_strength=8.5,
             duration_minutes=543,
             witness_count=8,
@@ -73,10 +73,10 @@ Witnesses: {ac.witness_count}
             contact_id="test",
             timestamp=datetime.now(),
             location="Test",
-            contact_type=None,
-            signal_strength=5.0,
-            duration_minutes=0,
-            witness_count=0,
+            contact_type=ContactType.RADIO,
+            signal_strength=9.0,
+            duration_minutes=1,
+            witness_count=1,
             is_verified=False
         )
     except Exception as e:
