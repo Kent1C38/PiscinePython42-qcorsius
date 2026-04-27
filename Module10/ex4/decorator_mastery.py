@@ -1,11 +1,12 @@
+from typing import Callable, Any
 import functools
 import time
 import inspect
 
 
-def spell_timer(func: callable) -> callable:
+def spell_timer(func: Callable) -> Callable:
     @functools.wraps(func)
-    def wrapper(*args, **kwargs):
+    def wrapper(*args: Any, **kwargs: Any) -> Any:
         print(f"Casting {func.__name__}...")
 
         start = time.perf_counter()
@@ -20,10 +21,10 @@ def spell_timer(func: callable) -> callable:
     return wrapper
 
 
-def power_validator(min_power: int) -> callable:
-    def decorator(func: callable):
+def power_validator(min_power: int) -> Callable:
+    def decorator(func: Callable) -> Callable:
         @functools.wraps(func)
-        def wrapper(*args, **kwargs):
+        def wrapper(*args: Any, **kwargs: Any) -> Any:
             sig = inspect.signature(func)
             bound = sig.bind(*args, **kwargs)
 
@@ -35,10 +36,10 @@ def power_validator(min_power: int) -> callable:
     return decorator
 
 
-def retry_spell(max_attempts: int) -> callable:
-    def decorator(func: callable):
+def retry_spell(max_attempts: int) -> Callable:
+    def decorator(func: Callable) -> Callable:
         @functools.wraps(func)
-        def wrapper(*args, **kwargs):
+        def wrapper(*args: Any, **kwargs: Any) -> Any:
             attempt = 0
             while attempt < max_attempts:
                 attempt += 1
@@ -65,21 +66,22 @@ class MageGuild:
 
 if __name__ == "__main__":
     @spell_timer
-    def fireball():
+    def fireball() -> str:
         time.sleep(1)
         return "FIREEEEEEEEEEEEEEEEEEEBAAAAAAALLL"
     print("="*5 + "Timer demo" + "="*5)
     print(fireball())
 
     @power_validator(15)
-    def create_spell(name: str, power: int):
+    def create_spell(name: str, power: int) -> str:
         return f"Spell {name} (power {power}) created!"
+
     print("\n" + "="*5 + "Power Validator demo" + "="*5)
     print(create_spell("Ice Spike", 20))
     print(create_spell("Shit Throwing", 0))
 
     @retry_spell(5)
-    def spell_creation():
+    def spell_creation() -> None:
         raise Exception("Et pourquoi pas ?")
 
     print("\n" + "="*5 + "Retry demo")

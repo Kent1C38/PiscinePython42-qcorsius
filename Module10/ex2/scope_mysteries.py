@@ -1,7 +1,10 @@
-def mage_counter() -> callable:
+from typing import Callable, Any
+
+
+def mage_counter() -> Callable:
     count = 0
 
-    def increment():
+    def increment() -> int:
         nonlocal count
         count += 1
         return count
@@ -9,10 +12,10 @@ def mage_counter() -> callable:
     return lambda: increment()
 
 
-def spell_accumulator(initial_power: int) -> callable:
+def spell_accumulator(initial_power: int) -> Callable:
     power = initial_power
 
-    def accumulate(to_add: int):
+    def accumulate(to_add: int) -> int:
         nonlocal power
         power += to_add
         return power
@@ -20,19 +23,17 @@ def spell_accumulator(initial_power: int) -> callable:
     return lambda to_add: accumulate(to_add)
 
 
-def enchantment_factory(enchantment_type: str) -> callable:
+def enchantment_factory(enchantment_type: str) -> Callable:
     return lambda x: f"{enchantment_type} {x}"
 
 
-def memory_vault() -> dict[str, callable]:
+def memory_vault() -> dict[str, Callable]:
     storage = dict()
 
-    def store(key, value):
-        nonlocal storage
+    def store(key: Any, value: Any) -> None:
         storage[key] = value
 
-    def recall(key):
-        nonlocal storage
+    def recall(key: Any) -> Any:
         return storage.get(key, "Memory not found")
 
     return {"store": store,

@@ -1,3 +1,4 @@
+from typing import Callable, Any
 from functools import reduce, partial, lru_cache, singledispatch
 import operator
 
@@ -15,7 +16,7 @@ def spell_reducer(spells: list[int], operation: str) -> int:
     return 0
 
 
-def partial_enchanter(base_enchantment: callable) -> dict[str, callable]:
+def partial_enchanter(base_enchantment: Callable) -> dict[str, Callable]:
     return {
         "fire_enchant": lambda t: partial(base_enchantment,
                                           power=50,
@@ -35,7 +36,7 @@ def partial_enchanter(base_enchantment: callable) -> dict[str, callable]:
 
 
 @lru_cache
-def memoized_fibonacci(n: int):
+def memoized_fibonacci(n: int) -> int:
     if n < 2 and n >= 0:
         return n
     elif n < 0:
@@ -44,22 +45,22 @@ def memoized_fibonacci(n: int):
     return memoized_fibonacci(n - 1) + memoized_fibonacci(n - 2)
 
 
-def spell_dispactcher() -> callable:
+def spell_dispactcher() -> Callable:
 
     @singledispatch
-    def cast(spell):
+    def cast(spell: Any) -> str:
         return f"Unknown Spell type: {type(spell)}"
 
     @cast.register(str)
-    def _(spell):
+    def _(spell: str) -> str:
         return f"Casting Enchantment: {spell}"
 
     @cast.register(int)
-    def _(spell):
+    def _(spell: int) -> str:
         return f"Casting Damage Spell: {spell} power"
 
     @cast.register(list)
-    def _(spell):
+    def _(spell: list) -> str:
         results = [cast(s) for s in spell]
         return "Multi-cast:\n" + "\n".join(results)
 
@@ -67,7 +68,7 @@ def spell_dispactcher() -> callable:
 
 
 if __name__ == "__main__":
-    def fibo(x: int):
+    def fibo(x: int) -> int:
         if x < 2 and x >= 0:
             return x
         elif x < 0:
@@ -83,7 +84,7 @@ if __name__ == "__main__":
 
     print("\n" + "="*5 + "Partial completing demo" + "="*5)
 
-    def enchant(power: int, element: str, target) -> str:
+    def enchant(power: int, element: str, target: Any) -> str:
         return f"Target: {target}, spell element: {element} ({power} power)"
 
     enchanter = partial_enchanter(enchant)
